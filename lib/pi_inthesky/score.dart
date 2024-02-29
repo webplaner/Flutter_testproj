@@ -1,4 +1,4 @@
-import 'dart:ui';
+// import 'dart:ui';
 import 'dart:math';
 
 import 'package:flame/components.dart';
@@ -9,10 +9,16 @@ class Score extends TextComponent with HasGameRef<PiInTheSkyGame>  {
   Score();
 
   late int score;
+  late int gameLevel = 1;
+  late int pieCounts = 3;
 
   @override
   Future<void>? onLoad() async {
-    score = 0;
+    score = 10;
+    gameLevel = 1;
+    pieCounts = 3;
+
+
     // position = Vector2.all(100);
     text = score.toString();
     position = Vector2(50, gameRef.size.y * 0.07);

@@ -29,4 +29,9 @@ class Plate extends PositionComponent with HasGameRef<PiInTheSkyGame>, DragCallb
     position.x += event.canvasDelta.x;
     return super.onDragUpdate(event);
   }
+
+  resetPostion() {
+    position = Vector2(gameRef.size.x / 2 - size.x / 2, gameRef.size.y * 0.9);
+  }
+
 }

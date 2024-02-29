@@ -1,6 +1,7 @@
-import 'package:flame/components.dart';
+// import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'package:test_proj/pi_inthesky/gameover.dart';
 // import 'package:flame/collisions.dart';
 // import 'package:flame/events.dart';
 // import 'package:flame/flame.dart';
@@ -8,7 +9,14 @@ import 'package:flame/game.dart';
 import 'package:test_proj/pi_inthesky/pigame.dart';
 
 void main() {
-  runApp(GameWidget(game: PiInTheSkyGame()));
+  final game = PiInTheSkyGame();
+
+  runApp(GameWidget(
+      game: game,
+      overlayBuilderMap: {
+        'gameOver': (context, _) => GameOverPage(game: game),
+      },
+  ));
 }
 
 // class PiInTheSkyGame extends FlameGame { //}with HasCollisionDetection {

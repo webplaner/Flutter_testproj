@@ -4,19 +4,18 @@ import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/collisions.dart';
-import 'package:flame/components.dart';
-import 'package:flutter/animation.dart';
 import 'package:test_proj/pi_inthesky/pigame.dart';
 import 'package:test_proj/pi_inthesky/plate.dart';
 import 'package:test_proj/pi_inthesky/score.dart';
 
 class Pie extends SpriteComponent with HasGameRef<PiInTheSkyGame>, CollisionCallbacks {
+
   late final Score _score;
   late final NextPieValue _nextPieValue;
+  late final int _pieIndex;
 
-  Pie({required Score score, required NextPieValue nextPieValue})
-      : _score = score, _nextPieValue = nextPieValue;
+  Pie({required Score score, required NextPieValue nextPieValue, required int pieIndex})
+      : _score = score, _nextPieValue = nextPieValue, _pieIndex = pieIndex;
 
   final Random _random = Random();
   late int pieNumber;
@@ -28,12 +27,9 @@ class Pie extends SpriteComponent with HasGameRef<PiInTheSkyGame>, CollisionCall
 
   @override
   Future<void>? onLoad() async {
-    resetPie();
-    // image = await Flame.images.load('Pies/Pie_Blue-08.png');
-    // size = Vector2(70, 70);
-    // sprite = Sprite(image);
+    size = Vector2(70, 70);
     add(CircleHitbox(radius: 35));
-
+    resetPie();
     return super.onLoad();
   }
 
@@ -41,7 +37,7 @@ class Pie extends SpriteComponent with HasGameRef<PiInTheSkyGame>, CollisionCall
     position.x = _random.nextDouble() * gameRef.size.x; // - size.x;
     position.x = (position.x <= size.x/2) ? position.x + size.x : position.x;
     position.x = (position.x >= gameRef.size.x - size.x/2) ? gameRef.size.x - size.x : position.x;
-    position.y = _random.nextDouble() * -100;
+    position.y = -100;
 
     pieNumber = _random.nextInt(10);
     pieColor = _random.nextInt(4);
@@ -49,13 +45,16 @@ class Pie extends SpriteComponent with HasGameRef<PiInTheSkyGame>, CollisionCall
     velocity = 150 + _random.nextDouble() * 250;
     String color = _colors[pieColor];
     image = await Flame.images.load('Pies/Pie_$color-0$pieNumber.png');
-    size = Vector2(70, 70);
+    // size = Vector2(70, 70);
     sprite = Sprite(image);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
+    
+    if (_pieIndex >= _score.pieCounts) return;
+
     position.y += velocity * dt;
     anchor = Anchor.center;
     angle += dt * velocity/180;
@@ -86,10 +85,25 @@ class Pie extends SpriteComponent with HasGameRef<PiInTheSkyGame>, CollisionCall
           _score.score = (_score.score < pieNumber) ? 0 : _score.score - pieNumber;
         }
 
-        resetPie();
+        if (_score.score <= 0) {
+          resetPie();
+          gameOver();
+        } else {
+          resetPie();
+        }
         // gameRef.pauseEngine();
       }
     }
+  }
+
+  gameOver() {
+    // gameRef.stopListening();
+    gameRef.pauseEngine();
+    gameRef.overlays.add('gameOver');
+  }
+
+  resetPostion() {
+    position.y = -100;
   }
 
 }

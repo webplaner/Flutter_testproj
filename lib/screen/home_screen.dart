@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,13 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 case 3:
                   imgname = 'paint';
                   break;
-                case 3:
+                case 2:
                   imgname = 'undo';
                   break;
                 default :
                   imgname = 'brush';
               }
-              print(number);
+              if (kDebugMode) {
+                print(number);
+              }
             });
 
           },
